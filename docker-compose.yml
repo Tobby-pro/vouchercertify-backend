@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    container_name: vouchercertify_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: voucherdb
+    ports:
+      - "5544:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    container_name: vouchercertify_backend
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/voucherdb
+      EMAIL_USER: btone.network@gmail.com
+      EMAIL_PASS: your_app_password
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: > 
+      sh -c "npx prisma migrate deploy && npm run seed && node index.js"
+
+volumes:
+  postgres_data:

@@ -2,10 +2,31 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install dependencies and global tools
+# Install Puppeteer + existing dependencies
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y openssl && \
+    apt-get install -y \
+    wget \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcups2 \
+    libdbus-1-3 \
+    libgdk-pixbuf2.0-0 \
+    libnspr4 \
+    libnss3 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    xdg-utils \
+    libglib2.0-0 \
+    libu2f-udev \
+    libvulkan1 \
+    openssl && \
     npm install -g dotenv-cli && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -23,5 +44,4 @@ COPY . .
 
 EXPOSE 4000
 
-# JSON format CMD for better signal handling
 CMD ["sh", "-c", "npx prisma migrate deploy && npm run seed && node index.js"]

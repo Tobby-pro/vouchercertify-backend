@@ -11,7 +11,11 @@ const voucherOrderRoute = require('./routes/voucherOrderRoute');
 const paystackWebhookRoute = require("./routes/paystack-webhook");
 const paystackInitiateRoute = require('./routes/paystack-initiate');
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://btonenet.com'], // ✅ only allow your frontend
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Health check

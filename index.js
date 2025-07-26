@@ -12,7 +12,7 @@ const paystackWebhookRoute = require("./routes/paystack-webhook");
 const paystackInitiateRoute = require('./routes/paystack-initiate');
 const app = express();
 app.use(cors({
-  origin: ['https://btonenet.com'], // ✅ only allow your frontend
+  origin: ['https://btonenet.com', 'https://www.btonenet.com'],
   credentials: true
 }));
 

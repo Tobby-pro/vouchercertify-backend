@@ -14,9 +14,10 @@ async function main() {
     "Axelos",
     "Google",
     "Oracle",
+    "Palo Alto Networks",
   ];
 
-  console.log("📦 Seeding vendors...");
+  console.log("📦 Seeding ");
 
   // Find or create vendors and store their IDs
   const vendorMap = {};
@@ -102,7 +103,7 @@ async function main() {
     { name: 'AWS Certified Advanced Networking - Specialty', vendor: 'AWS', price: 300, description: 'Validate your knowledge and skills to handle critical and complex networking' },
     { name: 'AWS Certified Security - Specialty', vendor: 'AWS', price: 300, description: 'Validate your knowledge and advanced technical skills in securing workloads and architectures on AWS' },
        // Microsoft
-{ name: "GitHub Actions", vendor: "Microsoft", price: 55.0, description: "GitHub Administrator - Intermediate" },
+{ name: "GitHub Actions", vendor: "Microsoft", price: 50.0, description: "GitHub Administrator - Intermediate" },
 { name: "GitHub Administration (beta)", vendor: "Microsoft", price: 50.0, description: "GitHub Administrator - Intermediate" },
 { name: "GitHub Advanced Security", vendor: "Microsoft", price: 50.0, description: "GitHub Administrator - Intermediate" },
 { name: "GitHub Copilot", vendor: "Microsoft", price: 50.0, description: "GitHub App Maker - Intermediate" },
@@ -218,6 +219,29 @@ async function main() {
     { name: "Cloud Infrastructure Architect", vendor: "Oracle", price: 245.0, description: "Oracle Cloud Infrastructure Architect" },
     { name: "PL/SQL Developer", vendor: "Oracle", price: 245.0, description: "Oracle Certified PL/SQL Developer" },
     { name: "MySQL DBA", vendor: "Oracle", price: 245.0, description: "Oracle MySQL Database Administrator" },
+
+    // Palo Alto Networks
+    { name: "Cybersecurity Apprentice", vendor: "Palo Alto Networks", price: 150.0, description: "Cyber Security Apprentice Exam" },
+    { name: "Cybersecurity Practitioner", vendor: "Palo Alto Networks", price: 150.0, description: "Cybersecurity Practitioner Exam Voucher" },
+    { name: "Network Security Professional", vendor: "Palo Alto Networks", price: 200.0, description: "Network Security Professional Exam" },
+    { name: "Cloud Security Professional", vendor: "Palo Alto Networks", price: 200.0, description: "Cloud Security Professional Exam" },
+    { name: "Security Operations Professional", vendor: "Palo Alto Networks", price: 200.0, description: "Security Operations Professional Exam" },
+    { name: "Security Service Edge Engineer", vendor: "Palo Alto Networks", price: 250.0, description: "Security Service Edge Engineer Exam" },
+    { name: "Network Security Analyst", vendor: "Palo Alto Networks", price: 250.0, description: "Network Security Analyst Exam" },
+    { name: "Xsiam Anlyst", vendor: "Palo Alto Networks", price: 250.0, description: "Xsiam Anlyst Exam" },
+    {name: "Xsiam Engineer", vendor: "Palo Alto Networks", price: 250.0, description: "Xsiam Engineer Exam"},
+    {name: "Next-gen Firewall Engineer", vendor: "Palo Alto Networks", price: 250.0, description: "Next-gen Firewall Exam"},
+    {name: "XDR Enginner", vendor: "Palo Alto Networks", price: 250.0, description: "XDR Engineer Exam"},
+    {name: "XDR Analyst", vendor: "Palo Alto Networks", price: 250.0, description: "XDR Analyst Exam"},
+    {name: "SD-Wan Engineer", vendor: "Palo Alto Networks", price: 250.0, description: "SD-Wan Engineer Exam"},
+    {name: "XSOAR Engineer", vendor: "Palo Alto Networks", price: 250.0, description: "XSOAR Engineer Exam"},
+    // Cisco
+    { name: "CCNA", vendor: "Cisco", price: 200.0, description: "Cisco Certified Network Associate" },
+    { name: "CCNP", vendor: "Cisco", price: 200.0, description: "Cisco Certified Network Professional" },
+    { name: "CCNP Routing & Switching", vendor: "Cisco", price: 200.0, description: "Cisco Certified Network Professional - Routing & Switching" },
+    { name: "CCNP Security", vendor: "Cisco", price: 200.0, description: "Cisco Certified Network Professional - Security" },
+    { name: "CCNP Infrastructure", vendor: "Cisco", price: 200.0, description: "Cisco Certified Network Professional - Infrastructure" },
+    
   ];
 
   console.log("📦 Seeding vouchers...");

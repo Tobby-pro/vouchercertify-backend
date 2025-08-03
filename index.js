@@ -11,7 +11,7 @@ const voucherOrderRoute = require('./routes/voucherOrderRoute');
 const paystackWebhookRoute = require("./routes/paystack-webhook");
 const paystackInitiateRoute = require('./routes/paystack-initiate');
 const app = express();
-const allowedOrigins = ['https://btonenet.com', 'https://www.btonenet.com'];
+const allowedOrigins = ['https://btonenet.com', 'https://www.btonenet.com',  'http://localhost:3000' ];
 
 app.use(cors({
   origin: function (origin, callback) {

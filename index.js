@@ -11,8 +11,18 @@ const voucherOrderRoute = require('./routes/voucherOrderRoute');
 const paystackWebhookRoute = require("./routes/paystack-webhook");
 const paystackInitiateRoute = require('./routes/paystack-initiate');
 const app = express();
+const allowedOrigins = ['https://btonenet.com', 'https://www.btonenet.com'];
+
 app.use(cors({
-  origin: ['https://btonenet.com', 'https://www.btonenet.com'],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 

@@ -10,9 +10,17 @@ const vendorExamRoute = require("./routes/vendorExamRoute");
 const voucherOrderRoute = require('./routes/voucherOrderRoute');
 const paystackWebhookRoute = require("./routes/paystack-webhook");
 const paystackInitiateRoute = require('./routes/paystack-initiate');
-const app = express();
-const allowedOrigins = ['https://btonenet.com', 'https://www.btonenet.com',  'http://localhost:3000' ];
 
+const app = express();
+
+// ✅ Updated allowed origins with both deployed and local environments
+const allowedOrigins = [
+  'https://btonenet.com',
+  'https://www.btonenet.com',
+  'http://localhost:3000',
+];
+
+// ✅ Adjusted CORS middleware
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -32,7 +40,6 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('VoucherCertify API is running 🚀');
 });
-
 
 // Routes
 app.use('/checkout', checkoutRoute);

@@ -2,6 +2,14 @@ const prisma = require('./prismaClient');
 const scrapeMicrosoftCerts = require('../scrapeMicrosoftCerts');
 
 async function main() {
+
+// 🧹 Clear existing data first
+  console.log("🧹 Clearing existing database records...");
+  await prisma.order.deleteMany();
+  await prisma.voucher.deleteMany();
+  await prisma.vendor.deleteMany();
+  console.log("✅ Database cleared.\n");
+
   // 1️⃣ Vendors to seed
   const vendorNames = [
     "Cisco",

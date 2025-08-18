@@ -10,7 +10,7 @@ const vendorExamRoute = require("./routes/vendorExamRoute");
 const voucherOrderRoute = require('./routes/voucherOrderRoute');
 const paystackWebhookRoute = require("./routes/paystack-webhook");
 const paystackInitiateRoute = require('./routes/paystack-initiate');
-
+const verifyPaymentRoute = require("./routes/verifyPaymentRoute");
 const app = express();
 
 // ✅ Updated allowed origins with both deployed and local environments
@@ -48,7 +48,7 @@ app.use("/vendors-with-exams", vendorExamRoute);
 app.use("/voucher-order", voucherOrderRoute);
 app.use("/", paystackWebhookRoute);
 app.use("/", paystackInitiateRoute);
-
+app.use("/", verifyPaymentRoute);
 // GET all vouchers
 app.get('/vouchers', async (req, res) => {
   try {

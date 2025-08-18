@@ -44,8 +44,12 @@ model Order {
   amount      Float
   quantity    Int         @default(1)
   status      OrderStatus @default(PENDING)
+  reference   String?     @unique   // <-- Paystack reference
+  voucherCode String?                // <-- code you generate
   createdAt   DateTime    @default(now())
 }
+
+
 
 enum OrderStatus {
   PENDING

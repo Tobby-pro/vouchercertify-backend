@@ -47,7 +47,7 @@ async function main() {
   const vouchers = [
     // Cisco
     { name: "CCNA", vendor: "Cisco", price: 300.0, description: "Cisco Certified Network Associate" },
-    { name: "CCNP", vendor: "Cisco", price: 400.0, description: "Cisco Certified Network Professional" },
+    { name: "CCNP", vendor: "Cisco", price: 400.0, description: "Cisco Certified Network Professional(Core)" },
     { name: "CCIE", vendor: "Cisco", price: 450.0, description: "Cisco Certified Internetwork Expert" },
     { name: "Sales", vendor: "Cisco", price: 80.0, description: "Sales Readiness" },
     { name: "CCT", vendor: "Cisco", price: 200.0, description: "Cisco Certified Field Technician" },

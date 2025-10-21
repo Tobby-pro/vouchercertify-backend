@@ -1,13 +1,15 @@
+// prisma/seed.js (or wherever your seed file lives)
 const prisma = require('./prismaClient');
 const scrapeMicrosoftCerts = require('../scrapeMicrosoftCerts');
 
 async function main() {
-
-// 🧹 Clear existing data first
+  // 🧹 Clear existing data first (wrapped in a transaction)
   console.log("🧹 Clearing existing database records...");
-  await prisma.order.deleteMany();
-  await prisma.voucher.deleteMany();
-  await prisma.vendor.deleteMany();
+  await prisma.$transaction([
+    prisma.order.deleteMany(),
+    prisma.voucher.deleteMany(),
+    prisma.vendor.deleteMany(),
+  ]);
   console.log("✅ Database cleared.\n");
 
   // 1️⃣ Vendors to seed
@@ -25,23 +27,32 @@ async function main() {
     "Palo Alto Networks",
   ];
 
-  console.log("📦 Seeding ");
-
-  // Find or create vendors and store their IDs
+  console.log("📦 Seeding vendors...");
+  // Upsert vendors and store their IDs
   const vendorMap = {};
   for (const name of vendorNames) {
-    let vendor = await prisma.vendor.findUnique({ where: { name } });
-    if (!vendor) {
-      vendor = await prisma.vendor.create({ data: { name } });
-    }
+    const vendor = await prisma.vendor.upsert({
+      where: { name },        // requires @unique on Vendor.name
+      update: {},
+      create: { name },
+    });
     vendorMap[name] = vendor.id;
     console.log(`✅ Vendor seeded: ${name} (id: ${vendor.id})`);
   }
 
-  // 2️⃣ Scrape Microsoft certs dynamically
-  console.log("🔍 Scraping Microsoft certifications...");
-  const microsoftVouchers = await scrapeMicrosoftCerts();
-  console.log(`🔍 Found ${microsoftVouchers.length} Microsoft certs.`);
+  // 2️⃣ Optionally scrape Microsoft certs (Puppeteer gated by ENABLE_SCRAPER)
+  let microsoftVouchers = [];
+  try {
+    if (process.env.ENABLE_SCRAPER === "true") {
+      console.log("🔍 Scraping Microsoft certifications...");
+      microsoftVouchers = await scrapeMicrosoftCerts();
+      console.log(`🔍 Found ${microsoftVouchers.length} Microsoft certs.`);
+    } else {
+      console.log("⚠️ Skipping Puppeteer scraping (ENABLE_SCRAPER is false).");
+    }
+  } catch (err) {
+    console.error("❌ Puppeteer scraping failed:", err.message);
+  }
 
   // 2️⃣ Vouchers to seed with vendorId
   const vouchers = [
@@ -55,26 +66,25 @@ async function main() {
     { name: "CyberOps Associate", vendor: "Cisco", price: 300.0, description: "Cisco Certified CyberOps Associate" },
     { name: "Business Specialist Associate", vendor: "Cisco", price: 250.0, description: "Business Specialist Written Level 2 exams" },
     // CompTIA
-{ name: "A+", vendor: "CompTIA", price: 133.0, description: "CompTIA A+ Certification" },
+{ name: "A+", vendor: "CompTIA", price: 186.0, description: "CompTIA A+ Certification" },
 { name: "A+ Network", vendor: "CompTIA", price: 195.0, description: "CompTIA Network+ Certification" },
 { name: "A+ Cyber", vendor: "CompTIA", price: 499.0, description: "CompTIA Security+ Certification" },
 { name: "Security+", vendor: "CompTIA", price: 214.0, description: "CompTIA Security+ Certification" },
-{ name: "CySA+", vendor: "CompTIA", price: 213.0, description: "CompTIA Cybersecurity Analyst" },
+{ name: "CySA+", vendor: "CompTIA", price: 298.0, description: "CompTIA Cybersecurity Analyst" },
 { name: "PenTest+", vendor: "CompTIA", price: 213.0, description: "CompTIA Penetration Tester" },
 { name: "CASP+", vendor: "CompTIA", price: 265.0, description: "CompTIA Advanced Security Practitioner" },
 { name: "Linux+", vendor: "CompTIA", price: 195.0, description: "CompTIA Linux+ Certification" },
-{ name: "Cloud+", vendor: "CompTIA", price: 195.0, description: "CompTIA Cloud+ Certification" },
-{ name: "Data+", vendor: "CompTIA", price: 128.0, description: "CompTIA Data+ Certification" },
-{ name: "DataSystem+", vendor: "CompTIA", price: 195.0, description: "CompTIA DataSystem+ Certification" },
-{name: "Tech+", vendor: "CompTIA", price: 63.0, description: "CompTIA Tech+ Certification" },
-// Extended CompTIA/Misc Exams
+{ name: "Cloud+", vendor: "CompTIA", price: 273.0, description: "CompTIA Cloud+ Certification" },
+{ name: "Data+", vendor: "CompTIA", price: 179.0, description: "CompTIA Data+ Certification" },
+{ name: "DataSystem+", vendor: "CompTIA", price: 273.0, description: "CompTIA DataSystem+ Certification" },
+{ name: "Tech+", vendor: "CompTIA", price: 63.0, description: "CompTIA Tech+ Certification" },
 { name: "AI Essentials", vendor: "CompTIA", price: 99.0, description: "CompTIA AI Essentials Certification" },
 { name: "Business Essentials", vendor: "CompTIA", price: 99.0, description: "CompTIA Business Essentials Certification" },
 { name: "Cisco Network Pro V8", vendor: "CompTIA", price: 245.0, description: "CompTIA Cisco Network Pro Certification" },
 { name: "Windows Client Pro", vendor: "CompTIA", price: 230.0, description: "CompTIA Windows Client Pro Certification" },
 { name: "Cloud Essentials", vendor: "CompTIA", price: 99.0, description: "CompTIA Cloud Essentials Certification" },
-{ name: "Cloud Essentials+", vendor: "CompTIA", price: 63.0, description: "CompTIA Cloud Essentials+ Certification" },
-{ name: "CloudNetX", vendor: "CompTIA", price: 578.0, description: "CompTIA CloudNetX Certification" },
+{ name: "Cloud Essentials+", vendor: "CompTIA", price: 88.0, description: "CompTIA Cloud Essentials+ Certification" },
+{ name: "CloudNetX", vendor: "CompTIA", price: 370.0, description: "CompTIA CloudNetX Certification" },
 { name: "Cyber Defense Pro", vendor: "CompTIA", price: 275.0, description: "CompTIA Cyber Defense Pro Certification" },
 { name: "Cyber+", vendor: "CompTIA", price: 290.0, description: "CompTIA Cyber+ Certification" },
 { name: "SecurityX", vendor: "CompTIA", price: 265.0, description: "CompTIA SecurityX Certification" },
@@ -84,7 +94,7 @@ async function main() {
 { name: "Microsoft Excel Pro", vendor: "CompTIA", price: 99.0, description: "CompTIA Microsoft Excel Pro Certification" },
 { name: "Microsoft Word Pro", vendor: "CompTIA", price: 99.0, description: "CompTIA Microsoft Word Pro Certification" },
 { name: "Linux Pro", vendor: "CompTIA", price: 275.0, description: "CompTIA Linux Pro Certification" },
-{ name: "ITF+", vendor: "CompTIA", price: 63.0, description: "CompTIA IT Fundamentals (ITF+)" },
+{ name: "ITF+", vendor: "CompTIA", price: 88.0, description: "CompTIA IT Fundamentals (ITF+)" },
 { name: "IT Fundamentals Pro", vendor: "CompTIA", price: 105.0, description: "CompTIA IT Fundamentals Pro" },
 { name: "Ethical Hacker Pro", vendor: "CompTIA", price: 305.0, description: "CompTIA Ethical Hacker Pro Certification" },
 { name: "Digital Literacy Pro", vendor: "CompTIA", price: 99.0, description: "CompTIA Digital Literacy Pro Certification" },
@@ -252,46 +262,63 @@ async function main() {
     
   ];
 
-  console.log("📦 Seeding vouchers...");
+ console.log("📦 Seeding vouchers...");
+  // Seed static vouchers with UPSERT (idempotent)
+  for (const v of vouchers) {
+    const vendorId = vendorMap[v.vendor];
+    if (!vendorId) {
+      console.warn(`⚠️ Vendor not found for voucher: ${v.name} (vendor: ${v.vendor})`);
+      continue;
+    }
+    await prisma.voucher.upsert({
+      where: { name: v.name }, // requires @unique on Voucher.name
+      update: {
+        price: v.price,
+        description: v.description,
+        vendorId,
+      },
+      create: {
+        name: v.name,
+        price: v.price,
+        description: v.description,
+        vendorId,
+      },
+    });
+    console.log(`✅ Seeded voucher: ${v.name}`);
+  }
 
- // First seed the static vouchers (non-Microsoft)
- for (const v of vouchers) {
-  await prisma.voucher.upsert({
-    where: { name: v.name },
-    update: {},
-    create: {
-      name: v.name,
-      price: v.price,
-      description: v.description,
-      vendorId: vendorMap[v.vendor],
-    },
-  });
-  console.log(`✅ Seeded voucher: ${v.name}`);
-}
+  // 4️⃣ Now seed the dynamically scraped Microsoft vouchers (if any), also via UPSERT
+  if (microsoftVouchers.length) {
+    console.log("💾 Seeding scraped Microsoft certifications...");
+    for (const v of microsoftVouchers) {
+      await prisma.voucher.upsert({
+        where: { name: v.name }, // assumes unique by name; adjust if you key by code
+        update: {
+          price: v.price,
+          description: v.description,
+          vendorId: vendorMap["Microsoft"],
+        },
+        create: {
+          name: v.name,
+          price: v.price,
+          description: v.description,
+          vendorId: vendorMap["Microsoft"],
+        },
+      });
+      console.log(`✅ Seeded Microsoft cert: ${v.name}`);
+    }
+  } else {
+    console.log("ℹ️ No scraped Microsoft vouchers to seed.");
+  }
 
-// Now seed the dynamically scraped Microsoft vouchers
-for (const v of microsoftVouchers) {
-  await prisma.voucher.upsert({
-    where: { name: v.name },
-    update: {},
-    create: {
-      name: v.name,
-      price: v.price,
-      description: v.description,
-      vendorId: vendorMap["Microsoft"],
-    },
-  });
-  console.log(`✅ Seeded Microsoft cert: ${v.name}`);
-}
-
-console.log("🌱 Done seeding all vouchers!");
+  console.log("🌱 Done seeding all vouchers!");
 }
 
 main()
-.catch((e) => {
-  console.error("❌ Seeding failed:", e);
-  process.exit(1);
-})
-.finally(async () => {
-  await prisma.$disconnect();
-});
+  .catch((e) => {
+    console.error("❌ Seeding failed:", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

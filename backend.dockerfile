@@ -2,13 +2,14 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install Puppeteer + existing dependencies
+# Install Chromium and Puppeteer dependencies
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
     wget \
     ca-certificates \
     fonts-liberation \
+    chromium \
     libappindicator3-1 \
     libasound2 \
     libatk-bridge2.0-0 \
@@ -26,10 +27,13 @@ RUN apt-get update && \
     libglib2.0-0 \
     libu2f-udev \
     libvulkan1 \
-    openssl && \
-    npm install -g dotenv-cli && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    openssl \
+    && npm install -g dotenv-cli \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Let Puppeteer know where Chromium is inside Debian Slim
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Install app dependencies
 COPY package*.json ./
